@@ -55,7 +55,7 @@ public: // Construction and Copy
     ///
     /// @param[in] str The string to copy. This string has to end in a zero byte.
     ///
-    String(const char *str) noexcept;
+    explicit String(const char *str) noexcept;
     
     /// Copy a string.
     ///

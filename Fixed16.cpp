@@ -220,82 +220,82 @@ Fixed16::Type fixedSaturatingDivide(Fixed16::Type a, Fixed16::Type b)
 }
 
 
-Fixed16::Fixed16(const Fixed16 &value)
+Fixed16::Fixed16(const Fixed16 &value) noexcept
 	: _value(value._value)
 {
 }
 
 
-Fixed16 Fixed16::saturatingAdd(const Fixed16 &other) const
+Fixed16 Fixed16::saturatingAdd(const Fixed16 &other) const noexcept
 {
 	return Fixed16(fixedSaturatingAdd(_value, other._value));
 }
 
 
-Fixed16& Fixed16::operator-=(const Fixed16 &other)
+Fixed16& Fixed16::operator-=(const Fixed16 &other) noexcept
 {
 	_value -= other._value;
 	return *this;
 }
 
 
-Fixed16 Fixed16::operator-(const Fixed16 &other) const
+Fixed16 Fixed16::operator-(const Fixed16 &other) const noexcept
 {
 	return Fixed16(_value - other._value);
 }
 
 
-Fixed16 Fixed16::saturatingSubtract(const Fixed16 &other) const
+Fixed16 Fixed16::saturatingSubtract(const Fixed16 &other) const noexcept
 {
 	return Fixed16(fixedSaturatingSubtract(_value, other._value));
 }
 
 
-Fixed16& Fixed16::operator*=(const Fixed16 &other)
+Fixed16& Fixed16::operator*=(const Fixed16 &other) noexcept
 {
 	_value = fixedMultiply(_value, other._value);
 	return *this;
 }
 
 
-Fixed16 Fixed16::operator*(const Fixed16 &other) const
+Fixed16 Fixed16::operator*(const Fixed16 &other) const noexcept
 {
 	return Fixed16(fixedMultiply(_value, other._value));
 }
 
 
-Fixed16 Fixed16::saturatingMultiply(const Fixed16 &other) const
+Fixed16 Fixed16::saturatingMultiply(const Fixed16 &other) const noexcept
 {
 	return Fixed16(fixedSaturatingMultiply(_value, other._value));
 }
 
 
-Fixed16& Fixed16::operator/=(const Fixed16 &other)
+Fixed16& Fixed16::operator/=(const Fixed16 &other) noexcept
 {
 	_value = fixedDivide(_value, other._value);
 	return *this;
 }
 
 
-Fixed16 Fixed16::operator/(const Fixed16 &other) const
+Fixed16 Fixed16::operator/(const Fixed16 &other) const noexcept
 {
 	return Fixed16(fixedDivide(_value, other._value));
 }
 
 
-Fixed16 Fixed16::saturatingDivide(const Fixed16 &other) const
+Fixed16 Fixed16::saturatingDivide(const Fixed16 &other) const noexcept
 {
 	return Fixed16(fixedSaturatingDivide(_value, other._value));
 }
 
 
-bool Fixed16::operator>=(const Fixed16 &other) const
+bool Fixed16::operator>=(const Fixed16 &other) const noexcept
 {
 	return (_value >= other._value);
 }
 
 
-bool Fixed16::operator>(const Fixed16 &other) const
+bool Fixed16::operator>(const Fixed16 &other) const noexcept
 {
 	return (_value > other._value);
 }
@@ -307,44 +307,44 @@ float Fixed16::toFloat() const
 }
 
 
-bool Fixed16::operator<=(const Fixed16 &other) const
+bool Fixed16::operator<=(const Fixed16 &other) const noexcept
 {
 	return (_value <= other._value);
 }
 
 
-bool Fixed16::operator<(const Fixed16 &other) const
+bool Fixed16::operator<(const Fixed16 &other) const noexcept
 {
 	return (_value < other._value);
 }
 
 
-bool Fixed16::operator!=(const Fixed16 &other) const
+bool Fixed16::operator!=(const Fixed16 &other) const noexcept
 {
 	return (_value != other._value);
 }
 
 
-bool Fixed16::operator==(const Fixed16 &other) const
+bool Fixed16::operator==(const Fixed16 &other) const noexcept
 {
 	return (_value == other._value);
 }
 
 
-Fixed16& Fixed16::operator+=(const Fixed16 &other)
+Fixed16& Fixed16::operator+=(const Fixed16 &other) noexcept
 {
 	_value += other._value;
 	return *this;
 }
 
 
-Fixed16 Fixed16::operator+(const Fixed16 &other) const
+Fixed16 Fixed16::operator+(const Fixed16 &other) const noexcept
 {
 	return Fixed16(_value + other._value);
 }
 
 
-Fixed16& Fixed16::operator=(const Fixed16 &other)
+Fixed16& Fixed16::operator=(const Fixed16 &other) noexcept
 {
 	_value = other._value;
 	return *this;

@@ -27,7 +27,7 @@
 namespace lr {
 
 
-/// A simple duration type similar to the standart library.
+/// A simple duration type similar to the standard library.
 ///
 /// This duration is simplified for the usage in embedded code.
 /// The type definitions will use unsigned types, so there are

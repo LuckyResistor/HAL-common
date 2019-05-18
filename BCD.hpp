@@ -1,7 +1,7 @@
 #pragma once
-// Date/Time
+// BCD Conversion Functions
 // ---------------------------------------------------------------------------
-// (c)2018 by Lucky Resistor. See LICENSE for details.
+// (c)2019 by Lucky Resistor. See LICENSE for details.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ namespace BCD {
 ///
 constexpr inline uint8_t convertBcdToBin(const uint8_t bcd)
 {
-    return (bcd&0xf)+((bcd>>4)*10);
+    return (bcd&0xfu)+((bcd>>4u)*10);
 }
 
 
@@ -44,7 +44,7 @@ constexpr inline uint8_t convertBcdToBin(const uint8_t bcd)
 ///
 constexpr inline uint8_t convertBinToBcd(const uint8_t bin)
 {
-    return (bin%10)+((bin/10)<<4);
+    return (bin%10u)+((bin/10u)<<4u);
 }
 
 

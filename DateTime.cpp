@@ -1,6 +1,6 @@
 // Date/Time
 // ---------------------------------------------------------------------------
-// (c)2018 by Lucky Resistor. See LICENSE for details.
+// (c)2019 by Lucky Resistor. See LICENSE for details.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #include "DateTime.hpp"
+#include "Timestamp.hpp"
 
 
 #include <tuple>
@@ -29,24 +30,24 @@ namespace {
     
 
 // The number of days per month.
-static const uint8_t cDaysPerMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const uint8_t cDaysPerMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 // The number of seconds per day.
-static const uint32_t cSecondsPerDay = 86400;
+const uint32_t cSecondsPerDay = 86400;
 
 // The number of seconds per hour.
-static const uint16_t cSecondsPerHour = 3600;
+const uint16_t cSecondsPerHour = 3600;
     
 // The number of seconds per minute.
-static const uint16_t cSecondsPerMinute = 60;
+const uint16_t cSecondsPerMinute = 60;
     
 // The number of days for a regular year.
-static const uint32_t cDaysPerNormalYear = 365;
+const uint32_t cDaysPerNormalYear = 365;
     
 
 // Calculate the day of the week.
 // Using the formula from: http://www.tondering.dk/claus/cal/chrweek.php
-static uint8_t calculateDayOfWeek(int16_t year, int16_t month, int16_t day)
+uint8_t calculateDayOfWeek(int16_t year, int16_t month, int16_t day)
 {
     const int16_t a = ((14 - month) / 12);
     const int16_t y = year - a;
@@ -56,13 +57,13 @@ static uint8_t calculateDayOfWeek(int16_t year, int16_t month, int16_t day)
 }
 
     
-static inline bool isLeapYear(uint16_t year)
+inline bool isLeapYear(uint16_t year)
 {
     return ((year&3) == 0 && year%100 != 0) || (year%400 == 0);
 }
 
     
-static inline uint8_t getMaxDayPerMonth(uint16_t year, uint8_t month)
+inline uint8_t getMaxDayPerMonth(uint16_t year, uint8_t month)
 {
     if (month == 2 && isLeapYear(year)) {
         return 29;
@@ -71,7 +72,7 @@ static inline uint8_t getMaxDayPerMonth(uint16_t year, uint8_t month)
 }
 
     
-static inline uint32_t getDaysForYear(uint16_t year)
+inline uint32_t getDaysForYear(uint16_t year)
 {
     if (isLeapYear(year)) {
         return cDaysPerNormalYear + 1;
@@ -91,6 +92,7 @@ DateTime::DateTime()
 
     
 DateTime::DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
+    : _year(2000), _month(1), _day(1), _hour(0), _minute(0), _second(0), _dayOfWeek(6)
 {
     setDate(year, month, day);
     setTime(hour, minute, second);
@@ -143,11 +145,6 @@ DateTime& DateTime::operator=(const DateTime &other)
 }
 
 
-DateTime::~DateTime()
-{
-}
-
-    
 bool DateTime::operator==(const DateTime &other) const
 {
 	return std::tie(_year, _month, _day, _hour, _minute, _second)
@@ -298,44 +295,6 @@ uint8_t DateTime::getSecond() const
 }
 
     
-DateTime DateTime::addSeconds(int32_t seconds) const
-{
-    return fromSecondsSince2000(toSecondsSince2000() + seconds);
-}
-
-
-DateTime DateTime::addDays(int32_t days) const
-{
-    return fromSecondsSince2000(toSecondsSince2000() + days*cSecondsPerDay);
-}
-
-    
-int32_t DateTime::secondsTo(const DateTime &other) const
-{
-    return static_cast<int32_t>(other.toSecondsSince2000()) - static_cast<int32_t>(toSecondsSince2000());
-}
-
-    
-uint32_t DateTime::toSecondsSince2000() const
-{
-    // This calculation will require some CPU cycles. It is an
-    // programmatic solution, no mathematical one.
-
-    uint32_t seconds = 0;
-    for (uint16_t year = 2000; year < _year; ++year) {
-        seconds += (getDaysForYear(year) * static_cast<uint32_t>(cSecondsPerDay));
-    }
-    for (uint8_t month = 1; month < _month; ++month) {
-        seconds += (static_cast<uint32_t>(getMaxDayPerMonth(_year, month)) * static_cast<uint32_t>(cSecondsPerDay));
-    }
-    seconds += static_cast<uint32_t>(_day-1) * static_cast<uint32_t>(cSecondsPerDay);
-    seconds += static_cast<uint32_t>(_hour) * static_cast<uint32_t>(cSecondsPerHour);
-    seconds += static_cast<uint32_t>(_minute) * static_cast<uint32_t>(cSecondsPerMinute);
-    seconds += static_cast<uint32_t>(_second);
-    return seconds;
-}
-
-    
 bool DateTime::isFirst() const
 {
     return _year == 2000 && _month == 1 && _day == 1 && _hour == 0 && _minute == 0 && _second == 0;
@@ -404,24 +363,52 @@ String DateTime::toString(Format format) const
     return result;
 }
 
-    
-DateTime DateTime::fromSecondsSince2000(uint32_t secondsSince2000)
+
+DateTime DateTime::fromUncheckedValues(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second, uint8_t dayOfWeek)
 {
-    // This calculation will require some CPU cycles. It is an
-    // programmatic solution, no mathematical one. This function
-    // is approximate 6 times slower than mathematical implementations.
-    
+    return DateTime(year, month, day, hour, minute, second, dayOfWeek);
+}
+
+
+template<typename SecondType>
+SecondType getSecondsSince2000(const DateTime &dateTime)
+{
+    // This calculation will require some CPU cycles. It is an programmatic solution, no mathematical one.
+    // It is optimized to use minimum amount of memory.
+    SecondType seconds = 0;
+    const auto dateTimeYear = dateTime.getYear();
+    for (uint16_t year = 2000; year < dateTimeYear; ++year) {
+        seconds += (getDaysForYear(year) * static_cast<SecondType>(cSecondsPerDay));
+    }
+    const auto dateTimeMonth = dateTime.getMonth();
+    for (uint8_t month = 1; month < dateTimeMonth; ++month) {
+        seconds += (static_cast<SecondType>(getMaxDayPerMonth(dateTimeYear, month)) * static_cast<SecondType>(cSecondsPerDay));
+    }
+    seconds += static_cast<SecondType>(dateTime.getDay()-1) * static_cast<SecondType>(cSecondsPerDay);
+    seconds += static_cast<SecondType>(dateTime.getHour()) * static_cast<SecondType>(cSecondsPerHour);
+    seconds += static_cast<SecondType>(dateTime.getMinute()) * static_cast<SecondType>(cSecondsPerMinute);
+    seconds += static_cast<SecondType>(dateTime.getSecond());
+    return seconds;
+}
+
+
+template<typename SecondType>
+DateTime getDateFromSecondsSince2000(SecondType secondsSince2000)
+{
+    // This calculation will require some CPU cycles. It is a programmatic solution, no mathematical one.
+    // This function is approximate 6 times slower than mathematical implementations.
+
     // Calculate the time
-    uint32_t secondsSinceMidnight = secondsSince2000%cSecondsPerDay;
-    const uint8_t hours = secondsSinceMidnight/static_cast<uint32_t>(cSecondsPerHour);
-    secondsSinceMidnight %= static_cast<uint32_t>(cSecondsPerHour);
-    const uint8_t minutes = secondsSinceMidnight/static_cast<uint32_t>(cSecondsPerMinute);
-    const uint8_t seconds = secondsSinceMidnight % static_cast<uint32_t>(cSecondsPerMinute);
+    SecondType secondsSinceMidnight = secondsSince2000 % static_cast<SecondType>(cSecondsPerDay);
+    const auto hours = static_cast<uint8_t>(secondsSinceMidnight / static_cast<SecondType>(cSecondsPerHour));
+    secondsSinceMidnight %= static_cast<SecondType>(cSecondsPerHour);
+    const auto minutes = static_cast<uint8_t>(secondsSinceMidnight/static_cast<SecondType>(cSecondsPerMinute));
+    const auto seconds = static_cast<uint8_t>(secondsSinceMidnight % static_cast<SecondType>(cSecondsPerMinute));
     // Calculate the date
-    uint32_t days = secondsSince2000/static_cast<uint32_t>(cSecondsPerDay);
+    SecondType days = secondsSince2000 / static_cast<SecondType>(cSecondsPerDay);
     const uint8_t dayOfWeek = (days+6)%7; // 2000-01-01 was Saturday (6)
     uint16_t year = 2000;
-    uint32_t daysForThisSection = getDaysForYear(year);
+    SecondType daysForThisSection = getDaysForYear(year);
     while (days >= daysForThisSection) {
         ++year;
         days -= daysForThisSection;
@@ -434,15 +421,81 @@ DateTime DateTime::fromSecondsSince2000(uint32_t secondsSince2000)
         days -= daysForThisSection;
         daysForThisSection = getMaxDayPerMonth(year, month);
     }
-    return DateTime(year, month, days+1, hours, minutes, seconds, dayOfWeek);
+    return DateTime::fromUncheckedValues(year, month, days+1, hours, minutes, seconds, dayOfWeek);
 }
 
-    
-DateTime DateTime::fromUncheckedValues(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second, uint8_t dayOfWeek)
+
+Timestamp32::Timestamp32()
+    : _value(0)
 {
-    return DateTime(year, month, day, hour, minute, second, dayOfWeek);
 }
 
-    
+
+Timestamp32::Timestamp32(const DateTime &dateTime)
+    : _value(getSecondsSince2000<uint32_t>(dateTime))
+{
+}
+
+
+void Timestamp32::addSeconds(int32_t seconds)
+{
+    _value += seconds;
+}
+
+
+void Timestamp32::addDays(int32_t days)
+{
+    _value += (cSecondsPerDay * days);
+}
+
+
+int32_t Timestamp32::secondsTo(const Timestamp32 &other) const
+{
+    return other._value - _value;
+}
+
+
+DateTime Timestamp32::toDateTime() const
+{
+    return getDateFromSecondsSince2000<uint32_t>(_value);
+}
+
+
+Timestamp64::Timestamp64()
+    : _value(0)
+{
+}
+
+
+Timestamp64::Timestamp64(const DateTime &dateTime)
+    : _value(getSecondsSince2000<uint64_t>(dateTime))
+{
+}
+
+
+void Timestamp64::addSeconds(int64_t seconds)
+{
+    _value += seconds;
+}
+
+
+void Timestamp64::addDays(int64_t days)
+{
+    _value += (static_cast<uint64_t>(cSecondsPerDay) * days);
+}
+
+
+int64_t Timestamp64::secondsTo(const Timestamp64 &other) const
+{
+    return other._value - _value;
+}
+
+
+DateTime Timestamp64::toDateTime() const
+{
+    return getDateFromSecondsSince2000<uint64_t>(_value);
+}
+
+
 }
 
