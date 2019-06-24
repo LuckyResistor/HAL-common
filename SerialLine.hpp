@@ -98,7 +98,7 @@ public: // Output
     /// Reset the send buffer.
     ///
     /// This will reset the send buffer, dropping all data which is waiting
-    //  to be sent.
+    /// to be sent.
     ///
     /// @return `Success` or `Error`.
     ///
