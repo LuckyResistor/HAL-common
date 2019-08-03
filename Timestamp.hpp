@@ -81,7 +81,7 @@ public:
 
     /// Convert this timestamp to a `DateTime` object.
     ///
-    lr::DateTime toDateTime() const;
+    DateTime toDateTime() const;
 
 private:
     uint32_t _value; ///< The value of the timestamp.
@@ -143,7 +143,7 @@ public:
 
     /// Convert this timestamp to a `DateTime` object.
     ///
-    lr::DateTime toDateTime() const;
+    DateTime toDateTime() const;
 
 private:
     uint64_t _value; ///< The value of the timestamp.

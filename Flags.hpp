@@ -137,13 +137,21 @@ public: // Operators
     ///
     constexpr inline EnumFlags operator^(Enum other) const noexcept { return EnumFlags(_flags^static_cast<FlagsType>(other)); }
 
-    /// Nagate this flags value.
+    /// Negate this flags value.
     ///
     constexpr inline EnumFlags operator~() const noexcept { return EnumFlags(~_flags); }
-    
+
+    /// Check if two flags are equal.
+    ///
+    constexpr inline bool operator==(const EnumFlags &other) const noexcept { return _flags == other._flags; }
+
+    /// Check if two flags are not equal.
+    ///
+    constexpr inline bool operator!=(const EnumFlags &other) const noexcept { return _flags != other._flags; }
+
     /// Convert this flags value into a bit mask.
     ///
-    constexpr inline operator FlagsType() const noexcept { return _flags; }
+    constexpr inline explicit operator FlagsType() const noexcept { return _flags; }
 
 public: // Helper methods.
     /// Check if a flag is set.
@@ -154,7 +162,13 @@ public: // Helper methods.
     constexpr inline bool isSet(Enum flag) const noexcept {
         return (_flags&static_cast<FlagsType>(flag))==static_cast<FlagsType>(flag)&&(static_cast<FlagsType>(flag)!=0||_flags==static_cast<FlagsType>(flag));
     }
-    
+
+    /// Check if one flag is set.
+    ///
+    constexpr inline bool isOneSet() const noexcept {
+        return _flags != 0;
+    }
+
     /// Set a flag.
     ///
     /// @param flag The flag to set.
@@ -179,6 +193,12 @@ public: // Helper methods.
     ///
     inline void clearFlag(Enum flag) noexcept {
         _flags &= (~static_cast<FlagsType>(flag));
+    }
+
+    /// Clear all flags.
+    ///
+    inline void clearAll() noexcept {
+        _flags = 0;
     }
 
     /// Create flags from a bit mask.

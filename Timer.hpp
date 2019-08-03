@@ -38,43 +38,57 @@ namespace lr {
 namespace Timer {
 
 
-/// Get the current tick count in milliseconds.
+/// Get the current real timer counter tick.
 ///
-/// This tick count will progress from zero to the end of the 32bit
-/// value and wrap back to zero.
+/// This tick count infinitely from zero to the end of the 32bit value.
 ///
 /// @return The tick count in milliseconds.
 ///
 Milliseconds tickMilliseconds();
 
+/// Wait for the next tick.
+///
+/// This function will wait for the next tick of the real time counter.
+///
+void waitForNextTick();
+
 /// Wait a number of milliseconds.
 ///
 /// @param milliseconds The number of milliseconds to wait.
 ///
-void delayMilliseconds(const uint32_t milliseconds);
+void delayMilliseconds(uint32_t milliseconds);
 
 /// Wait a number of microseconds.
 ///
 /// @param microseconds The number of microseconds to wait.
 ///
-void delayMicroseconds(const uint32_t microseconds);
+void delayMicroseconds(uint32_t microseconds);
 
-/// Wait a duration.
+/// Wait a given duration.
 ///
-inline void delay(const Seconds seconds) {
-    delayMilliseconds(seconds.ticks()*1000);
+/// By default the precision and range is limited by the 32bit real time counter.
+/// It is safe to assume delays up to one hour should work fine.
+///
+/// @param duration The duration to wait.
+///
+template<typename Ratio>
+inline void delay(const Duration<Ratio> &duration) {
+    delayMilliseconds(duration.toMilliseconds().ticks());
 }
 
-/// Wait a duration.
-///
-inline void delay(Milliseconds milliseconds) {
+template<>
+inline void delay<std::milli>(const Milliseconds &milliseconds) {
     delayMilliseconds(milliseconds.ticks());
 }
 
-/// Wait a duration.
-///
-inline void delay(Microseconds microseconds) {
+template<>
+inline void delay<std::micro>(const Microseconds &microseconds) {
     delayMicroseconds(microseconds.ticks());
+}
+
+template<>
+inline void delay<std::nano>(const Nanoseconds &nanoseconds) {
+    delayMicroseconds(nanoseconds.toMicroseconds().ticks());
 }
 
 /// A simple timer to measure elapsed time in milliseconds.
@@ -147,17 +161,17 @@ public:
     inline void restart(const Milliseconds timeout) noexcept {
         _endTime = (tickMilliseconds()+timeout);
     }
-    
+
     /// Check if this timer has expired.
     ///
     inline bool hasTimeout() const noexcept {
-        return ((_endTime-tickMilliseconds()).ticks() & 0x10000000) != 0;
+        return tickMilliseconds().deltaTo(_endTime) <= 0;
     }
 
     /// Check if the timer is still in time.
     ///
     inline bool isInTime() const noexcept {
-        return ((_endTime-tickMilliseconds()).ticks() & 0x10000000) == 0;
+        return tickMilliseconds().deltaTo(_endTime) > 0;
     }
 
 private:
