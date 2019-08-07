@@ -25,7 +25,6 @@
 #undef min
 #undef max
 #include <cstdint>
-#include <functional>
 
 
 /// @namespace lr::Timer

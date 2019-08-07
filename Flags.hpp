@@ -151,7 +151,7 @@ public: // Operators
 
     /// Convert this flags value into a bit mask.
     ///
-    constexpr inline explicit operator FlagsType() const noexcept { return _flags; }
+    constexpr inline operator FlagsType() const noexcept { return _flags; }
 
 public: // Helper methods.
     /// Check if a flag is set.
@@ -240,7 +240,7 @@ private:
 /// @param flagsName The name of the resulting flags type. E.g. `Channels`.
 ///
 #define LR_DECLARE_FLAGS(FlagEnum, FlagsName) \
-typedef ::lr::EnumFlags<FlagEnum> FlagsName;
+using FlagsName = ::lr::EnumFlags<FlagEnum>;
 
 /// Declare operators for the flags.
 ///
