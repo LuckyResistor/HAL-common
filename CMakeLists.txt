@@ -13,5 +13,5 @@ add_library(HAL-common BCD.hpp DateTime.cpp Fixed16.cpp String.cpp DateTime.hpp 
         IntegerMath.hpp InterruptLock.hpp RingBuffer.hpp SerialLine.hpp StatusTools.hpp String.hpp Timer.hpp
         Timestamp.hpp WireMaster.hpp WireMasterChip.hpp WireMasterChipRegister.hpp SerialLineBuffer.cpp
         SerialLineBuffer.hpp Watchdog.hpp event/Entry.hpp SerialLineStringWriter.hpp SerialLineStringWriter.cpp
-        StringWriter.hpp event/Data.hpp event/Loop.cpp BitTools.hpp)
+        StringWriter.hpp event/Data.hpp event/Loop.cpp BitTools.hpp StringReader.hpp)
 

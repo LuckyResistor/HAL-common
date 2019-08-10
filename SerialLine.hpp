@@ -1,7 +1,5 @@
 #pragma once
 //
-// Serial Line
-// ---------------------------------------------------------------------------
 // (c)2019 by Lucky Resistor. See LICENSE for details.
 //
 // This program is free software; you can redistribute it and/or modify
@@ -86,7 +84,7 @@ public: // Output
     /// @param[in] data A pointer to the data to be sent.
     /// @param[in] dataSize The size of the data block to send.
     /// @param[out] dataSent If this pointer is passed to the function, the
-    ///     number of actually sent bytes is resturned. In this case the status
+    ///     number of actually sent bytes is returned. In this case the status
     ///     `Partial` is returned.
     /// @return `Success`, `Partial` or `Error`.
     ///

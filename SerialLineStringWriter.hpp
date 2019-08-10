@@ -1,7 +1,5 @@
 #pragma once
 //
-// Serial Line String Writer
-// ---------------------------------------------------------------------------
 // (c)2019 by Lucky Resistor. See LICENSE for details.
 //
 // This program is free software; you can redistribute it and/or modify
