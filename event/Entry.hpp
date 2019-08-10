@@ -20,6 +20,8 @@
 
 #include "Data.hpp"
 
+#include "../BitTools.hpp"
+
 
 namespace lr {
 namespace event {
@@ -32,13 +34,12 @@ class Entry
 public:
     /// The flags for the entry
     ///
-    enum Flag : uint8_t
-    {
+    enum Flag : uint8_t {
         None = 0,
-        Valid = (1u << 0u), ///< Flag set for all valid events.
-        Immediate = (1u << 1u), ///< Flag set if the event happens each time.
-        OnInterrupt = (1u << 2u), ///< Flag set if the event happens if an interrupt flag is set.
-        Repeat = (1u << 3u), ///< Flag set if the event is repeated in a given interval or after an interrupt.
+        Valid = oneBit8(0), ///< Flag set for all valid events.
+        Immediate = oneBit8(1), ///< Flag set if the event happens each time.
+        OnInterrupt = oneBit8(2), ///< Flag set if the event happens if an interrupt flag is set.
+        Repeat = oneBit8(3), ///< Flag set if the event is repeated in a given interval or after an interrupt.
     };
     LR_DECLARE_FLAGS(Flag, Flags);
 
@@ -175,9 +176,11 @@ private:
 };
 
 
+LR_DECLARE_OPERATORS_FOR_FLAGS(Entry::Flags);
+
+
 }
 }
 
 
-LR_DECLARE_OPERATORS_FOR_FLAGS(lr::event::Entry::Flags);
 

@@ -273,7 +273,7 @@ public: // Implement Loop
     }
 
     void addImmediateEvent(Entry::Function fn, bool merge) override {
-        const auto flags = Entry::Flag::Valid | Entry::Flag::Immediate;
+        const Entry::Flags flags = Entry::Flag::Valid | Entry::Flag::Immediate;
         _storage.addEntry(Entry(flags, fn, 0_ms), merge);
     }
 

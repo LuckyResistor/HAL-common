@@ -84,9 +84,11 @@ union Data {
 };
 
 
+LR_DECLARE_OPERATORS_FOR_FLAGS(InterruptFlags);
+
+
 }
 }
 
 
-LR_DECLARE_OPERATORS_FOR_FLAGS(lr::event::InterruptFlags);
 
