@@ -17,8 +17,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#include "hal-common/Duration.hpp"
-#include "hal-common/Flags.hpp"
+#include "../Duration.hpp"
+#include "../Flags.hpp"
 
 #include <cstdint>
 

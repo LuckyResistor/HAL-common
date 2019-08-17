@@ -19,8 +19,9 @@
 
 
 #include "Entry.hpp"
-#include "hal-common/Timer.hpp"
-#include "hal-common/InterruptLock.hpp"
+
+#include "../Timer.hpp"
+#include "../InterruptLock.hpp"
 
 #include <cstdint>
 
