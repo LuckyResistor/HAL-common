@@ -1,5 +1,5 @@
 //
-// (c)2018 by Lucky Resistor. See LICENSE for details.
+// (c)2019 by Lucky Resistor. See LICENSE for details.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -45,6 +45,15 @@ String::String(const char *str) noexcept
     _length = static_cast<Size>(std::strlen(str));
     reserve(_length);
     std::memcpy(_data, str, _length+1);
+}
+
+
+String::String(const char *str, String::Size count) noexcept
+    : _length(count), _capacity(0), _data(nullptr)
+{
+    reserve(_length);
+    std::memcpy(_data, str, _length);
+    _data[_length] = '\0'; // Add the missing end mark.
 }
 
 
@@ -562,7 +571,45 @@ void String::appendNumber(int32_t value, uint8_t width, char fillChar) noexcept
     // Append the aligned string.
     String_alignNumber(*this, digits, digitCount, width, fillChar);
 }
-    
+
+
+String::Size String::getFirstIndex(char c) const noexcept
+{
+    return getFirstIndex(c, 0);
+}
+
+
+String::Size String::getFirstIndex(char c, String::Size offset) const noexcept
+{
+    if (_length == 0) {
+        return notFound;
+    }
+    for (Size i = offset; i < _length; ++i) {
+        if (_data[i] == c) {
+            return i;
+        }
+    }
+    return notFound;
+}
+
+
+String String::getSlice(String::Size index, String::Size length) const noexcept
+{
+    if (index >= _length) {
+        return String();
+    }
+    if (index + length > _length) {
+        length = (_length - index);
+    }
+    return String(_data + index, length);
+}
+
+
+String String::getTail(String::Size index) const noexcept
+{
+    return getSlice(index, notFound);
+}
+
 
 }
 

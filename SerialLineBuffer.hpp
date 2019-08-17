@@ -82,7 +82,7 @@ public:
     /// is ignored in this method.
     ///
     Status synchronize() noexcept;
-
+    
 public: // Implement SerialLine
     DataSize sendBytesAvailable() noexcept override;
     Status send(uint8_t value) noexcept override;

@@ -1,6 +1,6 @@
 #pragma once
 //
-// (c)2018 by Lucky Resistor. See LICENSE for details.
+// (c)2019 by Lucky Resistor. See LICENSE for details.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,7 +18,11 @@
 //
 
 
+#include "StatusTools.hpp"
+#include "IntegerMath.hpp"
+
 #include <cstdint>
+#include <limits>
 
 
 namespace lr {
@@ -36,7 +40,11 @@ class String
 public:
     /// The size type for the string.
     ///
-    typedef uint32_t Size;
+    using Size = uint16_t;
+
+    /// The value if an index was not found.
+    ///
+    constexpr static Size notFound = std::numeric_limits<Size>::max();
 
 public: // Construction and Copy
     /// Create an empty string.
@@ -54,7 +62,16 @@ public: // Construction and Copy
     /// @param[in] str The string to copy. This string has to end in a zero byte.
     ///
     explicit String(const char *str) noexcept;
-    
+
+    /// Create a new string with a given size.
+    ///
+    /// This will copy the given string up to `count` characters to create a new string object.
+    ///
+    /// @param[in] str The string to copy.
+    /// @param[in] count The number of bytes to copy..
+    ///
+    String(const char *str, Size count) noexcept;
+
     /// Copy a string.
     ///
     /// @param[in] other The other string to copy.
@@ -322,6 +339,37 @@ public: // Overloads to solve some ambiguous calls.
     inline void appendNumber(int16_t value, uint8_t width = 0, char fillChar = ' ') noexcept {
         appendNumber(static_cast<int32_t>(value), width, fillChar);
     }
+
+public: // String slicing and searching.
+    /// Get the first index of the given character.
+    ///
+    /// @param c The character to search.
+    /// @return The first index of the character or `notFound` if the character was not found.
+    ///
+    Size getFirstIndex(char c) const noexcept;
+
+    /// Get the first index of the given character.
+    ///
+    /// @param c The character to search.
+    /// @param offset The offset where to start the search.
+    /// @return The first index of the character or `notFound` if the character was not found.
+    ///
+    Size getFirstIndex(char c, Size offset) const noexcept;
+
+    /// Get the tail of this string.
+    ///
+    /// @param startIndex The start index of the string.
+    /// @return A new string with the selected copy.
+    ///
+    String getTail(Size index) const noexcept;
+
+    /// Get a slice of this string.
+    ///
+    /// @param index The index position in the string.
+    /// @param length The length of the string.
+    /// @return A new string with the selected copy.
+    ///
+    String getSlice(Size index, Size length) const noexcept;
 
 public:
     /// Check if this string is empty.

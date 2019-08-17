@@ -18,16 +18,17 @@
 //
 
 
+#include <cstring>
+
+
 namespace lr {
 
 
 /// A class to handle enum to string maps.
 ///
-/// The idea is to provide a simple wrapper class around static enum to
-/// string maps. The lookup of the enum values is not fast, and only
-/// suitable for a small number of strings. The benefit is the
-/// flexibility of the map, where reordering and the actual values
-/// of the Enums does not matter.
+/// The idea is to provide a simple wrapper class around static enum to string maps. The lookup of the enum values
+/// is slow and only suitable for a small number of strings (~ <100). The benefit is the flexibility of the map,
+/// where reordering and the actual values of the Enums does not matter.
 ///
 /// **Usage:**
 /// ```
@@ -35,23 +36,34 @@ namespace lr {
 ///     {MyEnum::A, "A"},
 ///     {MyEnum::B, "B"},
 ///     {MyEnum::C, "C"},
-///     {MyEnum::A, nullptr},
+///     {MyEnum::A, nullptr}, // end mark
 /// });
 /// ```
 ///
-/// The enum of the last entry does not matter. The `nullptr` as string
-/// will mark the last entry in the map.
+/// The enum of the last entry does not matter. The `nullptr` as string will mark the last entry in the map.
 ///
-/// The method EnumStringMap::string will always use the last entry from
-/// the map. Therefore you can add a special value for not mapped entries
-/// at this point:
+/// The method `string()` will always use the last entry from the map if the enum value is not found.
+/// Therefore you can add a default value for not mapped entries in the last position:
+///
 /// ```
 /// const EnumStringMap<MyEnum>({
 ///     {MyEnum::A, "A"},
 ///     {MyEnum::B, "B"},
 ///     {MyEnum::C, "C"},
 ///     {MyEnum::A, "Unknown"}, // <-- last value
-///     {MyEnum::A, nullptr},
+///     {MyEnum::A, nullptr}, // end mark
+/// });
+/// ```
+///
+/// This also works with the `value()` method, which will return the enum of the last value if the string
+/// does not match:
+///
+/// ```
+/// const EnumStringMap<MyEnum>({
+///     {MyEnum::First, "A"},
+///     {MyEnum::Second, "B"},
+///     {MyEnum::Unknown, ""}, // <-- last value, default for `value()`
+///     {MyEnum::Unknown, nullptr}, // end mark
 /// });
 /// ```
 ///
@@ -93,9 +105,23 @@ public:
         --entry;
         return entry->str;
     }
-    
+
+    /// Get the enum value for a given string.
+    ///
+    Enum value(const char *str) const noexcept {
+        const Entry *entry = _map;
+        while (entry->str != nullptr) {
+            if (std::strcmp(entry->str, str) == 0) {
+                return entry->value;
+            }
+            ++entry;
+        }
+        --entry;
+        return entry->value;
+    }
+
 private:
-    const Entry* const _map;
+    const Entry* const _map; ///< The assigned map.
 };
 
 

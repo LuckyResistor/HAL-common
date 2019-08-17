@@ -38,6 +38,13 @@ public:
     ///
     explicit SerialLineStringWriter(SerialLine *serialLine);
 
+public:
+    /// Access the used serial line.
+    ///
+    inline SerialLine* serialLine() const {
+        return _serialLine;
+    }
+
 public: // Implement StringWriter
     Status write(const String &text) override;
     Status write(char c, uint8_t count) override;

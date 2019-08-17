@@ -98,7 +98,7 @@ inline void ringIncrement(Type &value, Type delta, Type size) noexcept {
 /// @return The exceeding number of elements.
 ///
 template<typename Type>
-inline Type addWithOverflow(Type &value, Type delta, Type size) {
+inline Type addWithOverflow(Type &value, Type delta, Type size) noexcept {
     static_assert(std::is_integral<Type>::value, "Must be int type.");
     static_assert(std::is_unsigned<Type>::value, "Must be unsigned type.");
     const auto rest = size - value;
@@ -115,7 +115,7 @@ inline Type addWithOverflow(Type &value, Type delta, Type size) {
 /// Reimplementation of the `min` function.
 ///
 template<typename Type>
-constexpr inline Type min(Type a, Type b) {
+constexpr inline Type min(Type a, Type b) noexcept {
     return (a <= b) ? a : b;
 }
     
@@ -123,7 +123,7 @@ constexpr inline Type min(Type a, Type b) {
 /// Reimplementation of the `max` function.
 ///
 template<typename Type>
-constexpr inline Type max(Type a, Type b) {
+constexpr inline Type max(Type a, Type b) noexcept {
     return (a >= b) ? a : b;
 }
     

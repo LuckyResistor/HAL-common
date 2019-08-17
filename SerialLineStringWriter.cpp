@@ -35,7 +35,8 @@ StringWriter::Status SerialLineStringWriter::write(const String &text)
     // Just write as much data as possible.
     const auto result = _serialLine->send(
         reinterpret_cast<const uint8_t*>(text.getData()),
-        text.getLength());
+        text.getLength(),
+        nullptr);
     if (result == SerialLine::Status::Error) {
         return Status::Error;
     }
@@ -58,7 +59,7 @@ StringWriter::Status SerialLineStringWriter::write(char c, uint8_t count)
 StringWriter::Status SerialLineStringWriter::write(const char *text)
 {
     uint8_t textSize = 0;
-    for (uint8_t i = 0; i < 0xff; ++i) {
+    for (uint8_t i = 0; i < 0xffu; ++i) {
         if (text[i] == '\0') {
             textSize = i;
             break;

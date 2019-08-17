@@ -165,7 +165,7 @@ Fixed16::Type fixedSaturatingAdd(Fixed16::Type a, Fixed16::Type b)
 	if (result == cOverflowValue) {
 		if (a >= 0) {
 			return cMaximumValue;
-			} else {
+		} else {
 			return cMinimumValue;
 		}
 	}
@@ -179,7 +179,7 @@ Fixed16::Type fixedSaturatingSubtract(Fixed16::Type a, Fixed16::Type b)
 	if (result == cOverflowValue) {
 		if (a >= 0) {
 			return cMaximumValue;
-			} else {
+		} else {
 			return cMinimumValue;
 		}
 	}

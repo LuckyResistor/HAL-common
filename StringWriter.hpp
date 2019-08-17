@@ -25,7 +25,7 @@
 namespace lr {
 
 
-/// The abstract text writer interface.
+/// The abstract string writer interface.
 ///
 class StringWriter
 {
