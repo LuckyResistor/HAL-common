@@ -143,15 +143,14 @@ constexpr inline Type max(Type a, Type b) noexcept
 /// @return `true` if there was an overflow.
 ///
 template<typename IntType>
-constexpr inline bool addCheckOverflow(IntType a, IntType b, IntType *c)
+inline bool addCheckOverflow(IntType a, IntType b, IntType *c)
 {
-#if !defined(UNITTEST) && ((defined(__GNUC__) && __GNUC__ >= 5) || (defined(__clang__) && __has_builtin(__builtin_add_overflow)))
+#if !defined(UNITTEST) && (defined(__GNUC__) && __GNUC__ >= 5)
+    return __builtin_add_overflow(a, b, c);
+#elif !defined(UNITTEST) && (defined(__clang__) && __clang__ >= 4)
     return __builtin_add_overflow(a, b, c);
 #else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Winteger-overflow"
     const auto result = static_cast<IntType>(a + b);
-#pragma GCC diagnostic pop
     *c = result;
     if (std::numeric_limits<IntType>::is_signed) {
         // Two values with different signs always add without overflow, so focus on values with the same sign.
@@ -167,7 +166,7 @@ constexpr inline bool addCheckOverflow(IntType a, IntType b, IntType *c)
 }
 
 
-#if !defined(UNITTEST) && ((defined(__GNUC__) && __GNUC__ >= 5) || (defined(__clang__) && __has_builtin(__builtin_add_overflow)))
+#if !defined(UNITTEST) && ((defined(__GNUC__) && __GNUC__ >= 5) || (defined(__clang__) && __clang__ >= 4))
 /// Multiply and check for overflow.
 ///
 /// `c = a * b`
@@ -193,7 +192,7 @@ constexpr inline bool addCheckOverflow(IntType a, IntType b, IntType *c)
 /// @return `true` if there was an overflow.
 ///
 template<typename IntType, typename LargeType>
-constexpr inline bool _multiplyCheckOverflow(const IntType a, const IntType b, IntType* const c)
+inline bool _multiplyCheckOverflow(const IntType a, const IntType b, IntType* const c)
 {
     // A manual implementation which works up to 32bit, but may not produce perfect results.
     const LargeType result = static_cast<LargeType>(a) * static_cast<LargeType>(b);
@@ -202,37 +201,37 @@ constexpr inline bool _multiplyCheckOverflow(const IntType a, const IntType b, I
 }
 
 /// @copydoc _addCheckOverflow
-constexpr inline bool multiplyCheckOverflow(int8_t a, int8_t b, int8_t *c)
+inline bool multiplyCheckOverflow(int8_t a, int8_t b, int8_t *c)
 {
     return _multiplyCheckOverflow<int8_t, int16_t>(a, b, c);
 }
 
 /// @copydoc _addCheckOverflow
-constexpr inline bool multiplyCheckOverflow(uint8_t a, uint8_t b, uint8_t *c)
+inline bool multiplyCheckOverflow(uint8_t a, uint8_t b, uint8_t *c)
 {
     return _multiplyCheckOverflow<uint8_t, uint16_t>(a, b, c);
 }
 
 /// @copydoc _addCheckOverflow
-constexpr inline bool multiplyCheckOverflow(int16_t a, int16_t b, int16_t *c)
+inline bool multiplyCheckOverflow(int16_t a, int16_t b, int16_t *c)
 {
     return _multiplyCheckOverflow<int16_t, int32_t>(a, b, c);
 }
 
 /// @copydoc _addCheckOverflow
-constexpr inline bool multiplyCheckOverflow(uint16_t a, uint16_t b, uint16_t *c)
+inline bool multiplyCheckOverflow(uint16_t a, uint16_t b, uint16_t *c)
 {
     return _multiplyCheckOverflow<uint16_t, uint32_t>(a, b, c);
 }
 
 /// @copydoc _addCheckOverflow
-constexpr inline bool multiplyCheckOverflow(int32_t a, int32_t b, int32_t *c)
+inline bool multiplyCheckOverflow(int32_t a, int32_t b, int32_t *c)
 {
     return _multiplyCheckOverflow<int32_t, int64_t>(a, b, c);
 }
 
 /// @copydoc _addCheckOverflow
-constexpr inline bool multiplyCheckOverflow(uint32_t a, uint32_t b, uint32_t *c)
+inline bool multiplyCheckOverflow(uint32_t a, uint32_t b, uint32_t *c)
 {
     return _multiplyCheckOverflow<uint32_t, uint64_t>(a, b, c);
 }
