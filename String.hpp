@@ -243,7 +243,7 @@ public:
     /// Get a hex digit from a nibble.
     ///
     constexpr static char getHexDigit(const uint8_t value) noexcept {
-        return ((value <= 9) ? ('0'+value) : ('a'-0xa+value));
+        return static_cast<char>((value <= 9) ? ('0'+value) : ('a'-0xa+value));
     }
     
     /// Create a string with the binary representation for the given value.
@@ -340,6 +340,18 @@ public: // Overloads to solve some ambiguous calls.
         appendNumber(static_cast<int32_t>(value), width, fillChar);
     }
 
+public: // Convert the string into integers.
+    /// Convert this string into an integer.
+    ///
+    /// @return The integer and the status of the conversion.
+    ///
+    StatusResult<int8_t> toInt8() const;
+    StatusResult<uint8_t> toUInt8() const; ///< @copydoc String::toInt8()
+    StatusResult<int16_t> toInt16() const; ///< @copydoc String::toInt8()
+    StatusResult<uint16_t> toUInt16() const; ///< @copydoc String::toInt8()
+    StatusResult<int32_t> toInt32() const; ///< @copydoc String::toInt8()
+    StatusResult<uint32_t> toUInt32() const; ///< @copydoc String::toInt8()
+
 public: // String slicing and searching.
     /// Get the first index of the given character.
     ///
@@ -374,19 +386,27 @@ public: // String slicing and searching.
 public:
     /// Check if this string is empty.
     ///
-    bool isEmpty() const noexcept;
-    
+    inline bool isEmpty() const noexcept {
+        return _length == 0;
+    }
+
     /// Get the length of this string.
     ///
-    Size getLength() const noexcept;
-    
+    inline Size getLength() const noexcept {
+        return _length;
+    }
+
     /// Get the capacity of this string.
     ///
-    Size getCapacity() const noexcept;
+    inline Size getCapacity() const noexcept {
+        return _capacity;
+    }
 
     /// Access the data of this string
     ///
-    const char* getData() const noexcept;
+    inline const char* getData() const noexcept {
+        return _data;
+    }
 
     /// Access a single character of this string.
     ///

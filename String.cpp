@@ -255,30 +255,6 @@ void String::append(char c) noexcept
 }
 
 
-bool String::isEmpty() const noexcept
-{
-    return _length == 0;
-}
-
-
-String::Size String::getLength() const noexcept
-{
-    return _length;
-}
-
-
-String::Size String::getCapacity() const noexcept
-{
-    return _capacity;
-}
-
-
-const char* String::getData() const noexcept
-{
-    return _data;
-}
-
-
 void String::reserve(Size capacity) noexcept
 {
     if (capacity < 32) {
@@ -608,6 +584,116 @@ String String::getSlice(String::Size index, String::Size length) const noexcept
 String String::getTail(String::Size index) const noexcept
 {
     return getSlice(index, notFound);
+}
+
+
+namespace {
+
+
+/// Try to convert this string into an integer of the given type.
+///
+/// This function will return an error if the string contains an number which cannot be stored in the chosen
+/// integer type.
+///
+/// @tparam IntType The integer type for the result.
+/// @return The result of the conversion.
+///
+template<typename IntType>
+StatusResult<IntType> toInt(const String &str) noexcept
+{
+    if (str.isEmpty()) {
+        return StatusResult<IntType>::error();
+    }
+    IntType result = 0;
+    IntType factor;
+    if (str.getCharAt(0) == '-') {
+        // Negative number are only allowed for signed integer types.
+        if (!std::numeric_limits<IntType>::is_signed) {
+            return StatusResult<IntType>::error();
+        }
+        factor = -1;
+    } else {
+        factor = 1;
+    }
+    String::Size index = str.getLength();
+    while (index > 0) {
+        index -= 1;
+        const char c = str.getCharAt(index);
+        if (c >= '0' && c <= '9') {
+            const auto digit = static_cast<IntType>(c - '0');
+            // Only handle digits greater than zero.
+            if (digit > 0) {
+                // If the factor already reached the end of the range, this will not work.
+                if (factor == 0) {
+                    return StatusResult<IntType>::error();
+                }
+                // Try to calculate the digit for the current factor.
+                IntType digitWithFactor;
+                if (IntegerMath::multiplyCheckOverflow(digit, factor, &digitWithFactor)) {
+                    return StatusResult<IntType>::error();
+                }
+                // Try to add it to the result.
+                if (IntegerMath::addCheckOverflow(digitWithFactor, result, &result)) {
+                    return StatusResult<IntType>::error();
+                }
+            }
+        } else if (c == '-') {
+            if (index > 0) {
+                // The sign has to be the last element for the number.
+                return StatusResult<IntType>::error();
+            }
+        } else {
+            // Invalid character in the number.
+            return StatusResult<IntType>::error();
+        }
+        // If the factor already had an overflow, ignore it.
+        if (factor != 0) {
+            // Try to move the factor.
+            if (IntegerMath::multiplyCheckOverflow(factor, static_cast<IntType>(10), &factor)) {
+                factor = 0;
+            }
+        }
+    }
+    return StatusResult<IntType>::success(result);
+}
+
+
+}
+
+
+StatusResult<uint32_t> String::toUInt32() const
+{
+    return toInt<uint32_t>(*this);
+}
+
+
+StatusResult<int32_t> String::toInt32() const
+{
+    return toInt<int32_t>(*this);
+}
+
+
+StatusResult<uint16_t> String::toUInt16() const
+{
+    return toInt<uint16_t>(*this);
+}
+
+
+StatusResult<int16_t> String::toInt16() const
+{
+    return toInt<int16_t>(*this);
+}
+
+
+StatusResult<uint8_t> String::toUInt8() const
+{
+    return toInt<uint8_t>(*this);
+}
+
+
+StatusResult<int8_t> String::toInt8() const
+{
+    return toInt<int8_t>(*this);
 }
 
 
