@@ -405,6 +405,14 @@ void Fixed16::toString(char *buffer, uint8_t fractionDigits) const
 }
 
 
+String Fixed16::toString(uint8_t fractionDigits) const
+{
+    char buffer[16];
+    toString(buffer, fractionDigits);
+    return String(buffer);
+}
+
+
 }
 
 

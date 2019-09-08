@@ -51,6 +51,7 @@ public:
 public: // Get all functions from the superclass
     using WireMasterChip::readRegisterData;
     using WireMasterChip::readRegister;
+    using WireMasterChip::writeRegisterData;
     using WireMasterChip::writeRegister;
     using WireMasterChip::writeBits;
     using WireMasterChip::testBits;

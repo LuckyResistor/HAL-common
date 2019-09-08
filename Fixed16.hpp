@@ -18,6 +18,8 @@
 //
 
 
+#include "String.hpp"
+
 #include <cstdint>
 
 
@@ -199,6 +201,13 @@ public: // String conversion and display.
     /// @param[in] fractionDigits The number of fraction digits. 0-4.
     ///
     void toString(char *buffer, uint8_t fractionDigits) const;
+
+    /// Convert the value into a string.
+    ///
+    /// @param[in] fractionDigits The number of fraction digits. 0-4.
+    /// @return A string with the value.
+    ///
+    String toString(uint8_t fractionDigits) const;
 
 protected:
 	Type _value;

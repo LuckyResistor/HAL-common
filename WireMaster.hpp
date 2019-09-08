@@ -18,6 +18,8 @@
 //
 
 
+#include "Duration.hpp"
+
 #include <cstdint>
 #include <type_traits>
 
@@ -104,20 +106,22 @@ public:
     /// Set the speed for the I2C communication.
     ///
     /// @param[in] speed The speed for the bus.
+    /// @param[in] riseTime The rise time of the clock. If unsure, use 90ns.
     /// @return `Success` on success.
     ///         `Error` if there was a hardware problem settings the speed.
     ///         `NotSupported` if a speed change is not supported by the backend.
     ///
-    virtual Status setSpeed(Speed speed) = 0;
+    virtual Status setSpeed(Speed speed, Nanoseconds riseTime = 90_ns) = 0;
 
     /// Set the speed for the I2C communication.
     ///
     /// @param[in] speed The speed for the bus in Hz.
+    /// @param[in] riseTime The rise time of the clock. If unsure, use 90ns.
     /// @return `Success` on success.
     ///         `Error` if there was a hardware problem settings the speed.
     ///         `NotSupported` if a speed change is not supported by the backend.
     ///
-    virtual Status setSpeed(uint32_t frequencyHz) = 0;
+    virtual Status setSpeed(uint32_t frequencyHz, Nanoseconds riseTime = 90_ns) = 0;
 
     /// Start a write operation.
     ///

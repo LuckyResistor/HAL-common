@@ -67,6 +67,37 @@ constexpr uint32_t oneBit32(uint8_t bitIndex)
     return oneBit<uint32_t>(bitIndex);
 }
 
+/// Return a bit mask at a given bit index.
+///
+/// @param mask The bit mask, with bits at index position zero.
+/// @param bitIndex The index of the first bit in the mask.
+/// @return A bit mask with the given bits at the correct positions.
+///
+template<typename IntType>
+constexpr IntType shiftedBitMask(IntType mask, uint8_t bitIndex)
+{
+    return mask << bitIndex;
+}
+
+/// @copydoc shiftedBitMask
+constexpr uint8_t shiftedBitMask8(uint8_t mask, uint8_t bitIndex)
+{
+    return shiftedBitMask<uint8_t>(mask, bitIndex);
+}
+
+/// @copydoc shiftedBitMask
+constexpr uint16_t shiftedBitMask16(uint16_t mask, uint8_t bitIndex)
+{
+    return shiftedBitMask<uint16_t>(mask, bitIndex);
+}
+
+/// @copydoc shiftedBitMask
+constexpr uint32_t shiftedBitMask32(uint32_t mask, uint8_t bitIndex)
+{
+    return shiftedBitMask<uint32_t>(mask, bitIndex);
+}
+
+
 }
 
 
