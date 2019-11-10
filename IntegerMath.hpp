@@ -177,7 +177,7 @@ inline bool addCheckOverflow(IntType a, IntType b, IntType *c)
 /// @return `true` if there was an overflow.
 ///
 template<typename IntType>
-constexpr inline bool addCheckOverflow(IntType a, IntType b, IntType *c)
+constexpr inline bool multiplyCheckOverflow(IntType a, IntType b, IntType *c)
 {
     return __builtin_mul_overflow(a, b, c);
 }
