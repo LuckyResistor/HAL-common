@@ -143,51 +143,53 @@ using Microseconds = Duration<std::micro>; ///< Microseconds.
 using Nanoseconds = Duration<std::nano>; ///< Nanoseconds.
 
 
-// Declare integer literals for the units.
+}
+
+
+// Declare integer literals for the units in the global namespace.
 
 /// Days.
 ///
-constexpr Days operator "" _days(unsigned long long int ticks) {
-    return Days(static_cast<Days::TickType>(ticks));
+constexpr lr::Days operator "" _days(unsigned long long int ticks) {
+    return lr::Days(static_cast<lr::Days::TickType>(ticks));
 }
 
 /// Hours.
 ///
-constexpr Hours operator "" _hours(unsigned long long int ticks) {
-    return Hours(static_cast<Hours::TickType>(ticks));
+constexpr lr::Hours operator "" _hours(unsigned long long int ticks) {
+    return lr::Hours(static_cast<lr::Hours::TickType>(ticks));
 }
 
 /// Minutes.
 ///
-constexpr Minutes operator "" _minutes(unsigned long long int ticks) {
-    return Minutes(static_cast<Minutes::TickType>(ticks));
+constexpr lr::Minutes operator "" _minutes(unsigned long long int ticks) {
+    return lr::Minutes(static_cast<lr::Minutes::TickType>(ticks));
 }
 
 /// Seconds.
 ///
-constexpr Seconds operator "" _s(unsigned long long int ticks) {
-    return Seconds(static_cast<Seconds::TickType>(ticks));
+constexpr lr::Seconds operator "" _s(unsigned long long int ticks) {
+    return lr::Seconds(static_cast<lr::Seconds::TickType>(ticks));
 }
 
 /// Milliseconds.
 ///
-constexpr Milliseconds operator "" _ms(unsigned long long int ticks) {
-    return Milliseconds(static_cast<Milliseconds::TickType>(ticks));
+constexpr lr::Milliseconds operator "" _ms(unsigned long long int ticks) {
+    return lr::Milliseconds(static_cast<lr::Milliseconds::TickType>(ticks));
 }
 
 /// Microseconds.
 ///
-constexpr Microseconds operator "" _us(unsigned long long int ticks) {
-    return Microseconds(static_cast<Microseconds::TickType>(ticks));
+constexpr lr::Microseconds operator "" _us(unsigned long long int ticks) {
+    return lr::Microseconds(static_cast<lr::Microseconds::TickType>(ticks));
 }
 
 /// Nanoseconds.
 ///
-constexpr Nanoseconds operator "" _ns(unsigned long long int ticks) {
-    return Nanoseconds(static_cast<Nanoseconds::TickType>(ticks));
+constexpr lr::Nanoseconds operator "" _ns(unsigned long long int ticks) {
+    return lr::Nanoseconds(static_cast<lr::Nanoseconds::TickType>(ticks));
 }
 
 
-}
 
 
